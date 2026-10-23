@@ -24,7 +24,7 @@
       },
       "peerDependencies": {
         "@napi-rs/canvas": "*",
-        "@sudobility/sudojo_types": "^1.2.73",
+        "@sudobility/sudojo_types": "^1.2.75",
       },
       "optionalPeers": [
         "@napi-rs/canvas",
@@ -234,9 +234,9 @@
 
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
 
-    "@sudobility/sudojo_types": ["@sudobility/sudojo_types@1.2.36", "", { "peerDependencies": { "@sudobility/types": "^1.9.55" } }, "sha512-LiVcFv6y/u/l6ll+PNwNIlvMbLfsLF4hNHHx77U77O7hNj8Ig9asMrzoo1e67ZFbF/MJIoLloBJpqumU8739MQ=="],
+    "@sudobility/sudojo_types": ["@sudobility/sudojo_types@1.2.75", "https://npm.pkg.github.com/download/@sudobility/sudojo_types/1.2.75/802a954a441b16f37f0990ba9f404557f95655ab", { "peerDependencies": { "@sudobility/types": "^1.9.74" } }, "sha512-qMww5QR96q8ou0f++ixCYivsbfR+ZYlZWpVwZfJ5a8swCXI1YAgPKioSjw5xJuhVu/d6w2Fs5aPqm9wu80Q07A=="],
 
-    "@sudobility/types": ["@sudobility/types@1.9.57", "", {}, "sha512-POtx/cRagDEdnEwrXfuoyzhNKyGahD7TYJRZT7WYW6+9ID1ZHwWDGkI88KmenKtwsljiJPQZ9+QM7jy13hdv3g=="],
+    "@sudobility/types": ["@sudobility/types@1.9.74", "https://npm.pkg.github.com/download/@sudobility/types/1.9.74/f9ad864ba5d8d1097e7e48378ebee8aa7e129e88", {}, "sha512-jgt0F1r71qjFNiRNn/1YlL4JU65sjnzYd8Sfi+Y9z62Lu9VhIXeqWAH12u7/hmGPZqG3nxzn0V+s3sFkB1qWuQ=="],
 
     "@types/chai": ["@types/chai@5.2.3", "", { "dependencies": { "@types/deep-eql": "*", "assertion-error": "^2.0.1" } }, "sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA=="],
 
