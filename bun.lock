@@ -5,26 +5,26 @@
     "": {
       "name": "@sudobility/sudojo_ocr",
       "devDependencies": {
-        "@eslint/js": "^9.38.0",
-        "@napi-rs/canvas": "^0.1.68",
-        "@types/node": "^25.1.0",
-        "@typescript-eslint/eslint-plugin": "^8.46.2",
-        "@typescript-eslint/parser": "^8.46.2",
-        "eslint": "^9.38.0",
-        "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-prettier": "^5.5.5",
-        "eslint-plugin-react-hooks": "^7.0.1",
-        "eslint-plugin-react-refresh": "^0.5.2",
-        "globals": "^16.4.0",
-        "prettier": "^3.6.2",
-        "rimraf": "^6.0.1",
-        "tesseract.js": "^5.1.1",
-        "typescript": "^5.9.3",
-        "vitest": "^4.0.15",
+        "@eslint/js": "~9.39.5",
+        "@napi-rs/canvas": "~0.1.100",
+        "@types/node": "~25.9.9",
+        "@typescript-eslint/eslint-plugin": "~8.72.0",
+        "@typescript-eslint/parser": "~8.72.0",
+        "eslint": "~9.39.5",
+        "eslint-config-prettier": "~10.1.8",
+        "eslint-plugin-prettier": "~5.5.7",
+        "eslint-plugin-react-hooks": "~7.1.1",
+        "eslint-plugin-react-refresh": "~0.5.7",
+        "globals": "~16.5.0",
+        "prettier": "~3.9.10",
+        "rimraf": "~6.1.3",
+        "tesseract.js": "~5.1.1",
+        "typescript": "~5.9.3",
+        "vitest": "~4.1.12",
       },
       "peerDependencies": {
         "@napi-rs/canvas": "*",
-        "@sudobility/sudojo_types": "^1.2.76",
+        "@sudobility/sudojo_types": "^1.2.77",
       },
       "optionalPeers": [
         "@napi-rs/canvas",
@@ -166,9 +166,9 @@
 
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
 
-    "@sudobility/sudojo_types": ["@sudobility/sudojo_types@1.2.76", "https://npm.pkg.github.com/download/@sudobility/sudojo_types/1.2.76/edf25bb4409a6b8e8d60a026e8f2dd467af70424", { "peerDependencies": { "@sudobility/types": "^1.9.74" } }, "sha512-dwwk0SPUsXEohHe5QaZdx5FUH/f+04s5rFCOL6T4f7RroDa3IOLgOuMeTBlMnXT2ojNOcCWPeCq/BHYlX4Lerg=="],
+    "@sudobility/sudojo_types": ["@sudobility/sudojo_types@1.2.77", "https://npm.pkg.github.com/download/@sudobility/sudojo_types/1.2.77/8eca13db4f2d88263cf8cd6c0c06b6920d96f461", { "peerDependencies": { "@sudobility/types": "^1.9.75" } }, "sha512-OD3j1wZbHY7eoyaQ/RLSPo04q1HBY6YZkA1/gxRIGWg/KeWTOTd2onIP+7GtUJv+/LxsJzqkvXtbSK7sWNusUA=="],
 
-    "@sudobility/types": ["@sudobility/types@1.9.74", "https://npm.pkg.github.com/download/@sudobility/types/1.9.74/f9ad864ba5d8d1097e7e48378ebee8aa7e129e88", {}, "sha512-jgt0F1r71qjFNiRNn/1YlL4JU65sjnzYd8Sfi+Y9z62Lu9VhIXeqWAH12u7/hmGPZqG3nxzn0V+s3sFkB1qWuQ=="],
+    "@sudobility/types": ["@sudobility/types@1.9.75", "https://npm.pkg.github.com/download/@sudobility/types/1.9.75/d041222e1a9c48b1857a25686361fa493265e572", {}, "sha512-c0IqHhNsyMxWFzv+sC8drTXid1s/yberzme5JJTYIR2CE+DxpnjFCyL0AIMKUwTQYhYKvRZG0JkWRFplirbBrw=="],
 
     "@types/chai": ["@types/chai@5.2.3", "", { "dependencies": { "@types/deep-eql": "*", "assertion-error": "^2.0.1" } }, "sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA=="],
 
