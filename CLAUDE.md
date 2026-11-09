@@ -1,12 +1,11 @@
 # CLAUDE.md
 
-> **Git policy — never auto-commit or auto-push.** Leave your work in the working tree.
-> Run `git commit`, `git push`, `gh pr create`, or `scripts/push_all.sh` **only when the user
-> explicitly asks in that turn**. Approval for an earlier change does not carry forward, and
-> finishing a task is not permission to commit it.
+> **Git policy — never auto-commit or auto-push.** Leave your work in the working tree. Run
+> `git commit`, `git push`, `gh pr create`, or `scripts/push_all.sh` **only when the user explicitly
+> asks in that turn** — approval for an earlier change does not carry forward. Stay on the current
+> branch; do not create feature branches for code changes.
 
-This file provides context for AI assistants working on this codebase. It is also shipped in the
-npm tarball (`"files": ["dist/**/*", "CLAUDE.md"]`).
+This file is also shipped in the npm tarball (`"files": ["dist/**/*", "CLAUDE.md"]`).
 
 ## Project Overview
 
@@ -28,7 +27,7 @@ somebody else's service.
 
 ## Commands
 
-**Bun only.** Don't use npm, yarn, or pnpm. Bun 1.3.10 is the verified version.
+**Bun only.** Don't use npm, yarn, or pnpm. Verified with Bun 1.4.2.
 
 | Command | What it does | Verified |
 |---|---|---|
@@ -36,25 +35,23 @@ somebody else's service.
 | `bun run typecheck` | `tsc --noEmit` (src only, **excludes `*.test.ts`**) | ✅ passes |
 | `bun run lint` / `lint:fix` | `eslint src --ext .ts` (prettier violations are lint errors) | ✅ passes |
 | `bun run format` / `format:check` | prettier on `src/**/*.{ts,js,json,md}` | ✅ check passes |
-| `bun run test` | `vitest run`, no config file, default globs (5 files) | see next two rows |
-| `bunx vitest run src/algorithms` | pure-pixel unit tests only (91 tests, ~3 s) | ✅ 91/91 |
-| `bunx vitest run src/test` | end-to-end on fixtures with a faked paddle response (~0.5 s) | ✅ |
-| `PADDLE_OCR_URL=http://ocr.sudobility.com bun run test` | also runs the live checks, asserting **81/81** per board | ✅ 109/109, ~4 s |
+| `bun run test` (alias `test:unit`) | `vitest run`, no config file, default globs (6 files) | ✅ 106 passed, 3 skipped (109), ~0.7 s |
+| `bunx vitest run src/algorithms` | pure-pixel unit tests only (4 files, 91 tests) | ✅ 91/91 |
+| `bunx vitest run src/test` | e2e on fixtures with a faked paddle response; the 3 live tests are skipped offline | ✅ 2 passed, 3 skipped |
+| `PADDLE_OCR_URL=http://ocr.sudobility.com bun run test` | also runs the 3 live board checks, asserting **81/81** per board | ✅ 109/109 |
 | `bun run build` | `tsc -p tsconfig.esm.json` → `dist/` (`.js` + `.d.ts` + maps) | ✅ (built to scratch) |
 | `bun run clean` | `rimraf dist` | no |
 | `bun run dev` | `tsc --watch` on `tsconfig.json`, which is `noEmit`: **watch typecheck only, emits nothing** | no |
 | `bun run test:watch` | `vitest` watch | no |
 | `bun run test:coverage` | `vitest --coverage`: **`@vitest/coverage-v8` isn't installed**, so this won't work as-is | no |
 | `bun run verify` | typecheck, then lint, test, build | all parts verified separately |
-| `bun run tests/evaluate-truth.ts` | accuracy vs `tests/*_truth.txt` (console only). Predates the paddle swap; needs a `PaddleConfig` to run | ⚠️ not updated |
-| `bun run tests/validate-pencilmarks.ts` | **overwrites** the tracked `tests/*_results.json` | no |
+| `bun run tests/evaluate-truth.ts` / `validate-pencilmarks.ts` | accuracy corpus scripts; **stale** (pass a Tesseract arg, predate the paddle swap). `validate-pencilmarks.ts` overwrites tracked `tests/*_results.json` | ⚠️ not updated |
 
 **Release (document only, don't run).** `prepublishOnly` runs `clean` then `verify`. CI
-(`.github/workflows/ci-cd.yml` → `johnqh/workflows` `unified-cicd.yml@main`) runs on pushes and
-PRs to `main`/`develop` and publishes to npm (public) when `NPM_TOKEN` is set. Family releases go
-through `sudojo_app/scripts/push_all.sh`, where this package is **2nd** in order, right after
-`sudojo_types`. That script bumps the `sudojo_types` peer and the patch version, which is what the
-`chore: bump sudojo_types … and bump version` commits are.
+(`.github/workflows/ci-cd.yml` reuses `johnqh/workflows` `unified-cicd.yml@main`) publishes to npm
+(public) on pushes to `main`/`develop` when `NPM_TOKEN` is set. Family releases go through
+`sudojo_app/scripts/push_all.sh`, where this package is **2nd**, right after `sudojo_types`; that
+script bumps the `sudojo_types` peer and the patch version (the `chore: bump sudojo_types …` commits).
 
 ## Architecture
 
@@ -66,13 +63,9 @@ extractSudokuFromImage(adapter, source, paddle, config?, onProgress?)         sr
  │    → edge-density fallback → dark-pixel fallback (never returns null in practice)
  ├─ recognizeBoard(adapter, croppedCanvas, paddle)                          src/paddle.ts
  │    toDataURL → strip `data:` prefix → POST ${url}/v1/ocr { image }
- │    mapBlocksToBoard: bucket each block by the cell its bbox centre lands in
- │      · normalize full-width digits ('３６' → '36')
- │      · cell with >1 block            → pencilmarks, no given
- │      · single block, /^[1-9]$/ and
- │        height ≥ 0.45 × cell height   → given
- │      · single small digit / merged
- │        candidate column ('147')      → pencilmarks
+ │    mapBlocksToBoard: bucket each block by the cell its bbox centre lands in; >1 block → pencil-
+ │      marks; a single [1-9] block ≥ 0.45× cell height → given; a small/merged candidate column
+ │      ('147') → pencilmarks (full-width digits '３６'→'36' normalized first)
  ├─ removeConflictingDigits: duplicate in a row/col/box → drop the lower-confidence one
  ├─ computeLegalPencilmarks (pencilmark mode, only if any cell looked pencilmarked)
  └─ OCRResult { board: SolverBoard, confidence, digitCount }
@@ -82,26 +75,20 @@ extractSudokuFromImage(adapter, source, paddle, config?, onProgress?)         sr
 
 ## Public API
 
-| Import | Exports |
-|---|---|
-| `@sudobility/sudojo_ocr` | `extractSudokuFromImage`, `detectAndCropBoard` (→ data URL), `extractCellImages` (→ 81 data URLs, default margin 0.154), `DEFAULT_OCR_CONFIG` |
-| ″ (algorithms) | `toGrayscale`, `gaussianBlur`, `cannyEdgeDetection`, `enhanceContrast`, `binarize`, `adaptiveBinarize`, `preprocessForOCR`, `isCellEmpty`, `removeGridLines`, `detectBoardRectangle`, `findRectangleDarkPixels`, `squarifyRectangle`, `parseDigitFromText`, `findConnectedComponents`, `classifyCellContent`, `isPencilmarkPresent` |
-| ″ (paddle) | `recognizeBoard`, `mapBlocksToBoard`, `PaddleBlock`, `BoardRecognition` |
-| ″ (types) | `OCRProgress`, `OCRResult`, `OCRConfig`, `Rectangle`, `CanvasAdapter`, `CanvasLike`, `ImageLike`, `ImageDataLike`, `CellRecognition`, `PaddleConfig`, `ConnectedComponent`, `CellContentType` |
-| `@sudobility/sudojo_ocr/node` | `createNodeAdapter()` (**async**; default export), `NodeCanvasAdapter`. Accepts Buffer or file path |
+For the full export list see `src/index.ts`. The pipeline (`extractSudokuFromImage`,
+`detectAndCropBoard`→data URL, `extractCellImages`→81 data URLs), `DEFAULT_OCR_CONFIG`, the paddle
+client (`recognizeBoard`, `mapBlocksToBoard`), the pure-pixel algorithms, and the types are all
+exported from the root. The `/node` subpath adds `createNodeAdapter()` (**async**, also the default
+export) and `NodeCanvasAdapter`, which accept a Buffer or a file path.
 
 Not exported from the root: `medianFilter`, `dilate`, `removeEdgeSpanningLines`, and the `OCR_*`
 constants. Import those from `src/algorithms` or `src/types` inside the repo.
 
-**Result contract** (`SolverBoard` from `@sudobility/sudojo_types`):
-
-| Field | Value |
-|---|---|
-| `board.original`, `board.user` | the same 81-char row-major string, `'0'` = empty |
-| `board.pencilmark.numbers` | 81 comma-separated entries (`''` or digits `1-9`) |
-| `board.pencilmark.autopencil` | `true` iff any entry is non-empty |
-| `confidence` | mean paddle block confidence (0–100) over recognized cells; typically 100 |
-| `digitCount` | number of recognized givens |
+**Result contract.** `OCRResult.board` is a `SolverBoard` from `@sudobility/sudojo_types`:
+`board.original` and `board.user` are the same 81-char row-major string (`'0'` = empty);
+`board.pencilmark.numbers` is 81 comma-separated entries (`''` or `1-9`); `board.pencilmark.autopencil`
+is `true` iff any entry is non-empty. `confidence` is the mean paddle block confidence (0–100,
+typically 100) and `digitCount` the number of recognized givens.
 
 **`OCRConfig`** (`Partial`, merged over `DEFAULT_OCR_CONFIG`):
 
@@ -136,18 +123,17 @@ constants. Import those from `src/algorithms` or `src/types` inside the repo.
 src/
   index.ts                 root exports (curated subset of algorithms)
   types.ts                 OCRConfig/Result/Progress, CanvasAdapter, PaddleConfig, CellRecognition, OCR_* constants
-  paddle.ts                paddle_ocr client + block→cell geometry + given/pencilmark rule
-  ocr.ts                   entire pipeline (~1650 lines, including the private pencilmark passes)
-  adapters/{web,node}.ts   CanvasAdapter implementations; types.ts/index.ts are type re-exports
-  algorithms/
-    imageProcessing.ts     grayscale, blur, Sobel edges, contrast, binarize, Otsu, median, dilate,
-                           removeGridLines, removeEdgeSpanningLines, isCellEmpty
-    boardDetection.ts      detectBoardRectangle (+ fallbacks), squarifyRectangle
-    cellClassification.ts  findConnectedComponents; classifyCellContent/isPencilmarkPresent (unused by ocr.ts)
-    digitParsing.ts        parseDigitFromText + CORRECTIONS map
+  paddle.ts                paddle_ocr client + block→cell geometry + given/pencilmark rule (~146 lines)
+  ocr.ts                   entire pipeline (~375 lines, including the private pencilmark passes)
+  adapters/node.ts         the only CanvasAdapter implementation; adapters/types.ts + adapters/index.ts
+                           are type re-exports. There is no web.ts
+  algorithms/              pure-pixel fns: imageProcessing (grayscale/blur/Sobel/binarize/Otsu/
+                           removeGridLines/isCellEmpty), boardDetection (detectBoardRectangle+fallbacks,
+                           squarifyRectangle), cellClassification (unused by ocr.ts), digitParsing
     *.test.ts              unit tests on synthetic pixel data
-  test/ocr.test.ts         e2e: 3 digit boards (≥77/81 each) + pencilmark board
-  test/fixtures/           Sudoku-Board-{1,2,3}, Sudoku-Board-Pencilmarks.png
+  test/ocr.test.ts         e2e: 2 offline tests (exact match on a faked paddle response, empty board)
+                           + 3 live tests (opt-in via PADDLE_OCR_URL, assert 81/81 per board)
+  test/fixtures/           Sudoku-Board-1.jpg, -2.png, -3.jpg, Sudoku-Board-Pencilmarks.png
 tests/                     NOT vitest (no .test suffix), bun scripts plus the accuracy corpus
   <img> + <img>_truth.txt + <img>_results.json   for lvc39h9c6ra81, pencilmarks-full, pencil_marks_sample
   evaluate-truth.ts, validate-pencilmarks.ts, diagnose-cells*.ts
@@ -187,27 +173,23 @@ plans/IMPROVEMENTS.md      improvement backlog
 - Test files are excluded from `tsc` (`tsconfig.json` `exclude`). `tests/*.ts` is covered by
   neither typecheck, lint, nor prettier.
 - Both `eslint.config.js` and `eslint.config.mjs` exist. ESLint loads **`.js`**, so `.mjs` is dead.
-- `@sudobility/sudojo_types` is a peer only, not a devDependency. `bun.lock` still resolves it to
-  `1.2.36` while the peer range is `^1.2.67`.
+- `@sudobility/sudojo_types` is a peer only, not a devDependency. The peer range is `^1.2.80`, but
+  `bun.lock` resolves it to `1.2.79` (below the range) — `bun install` pulls 1.2.79 from the
+  GitHub Packages registry (`.npmrc`: `@sudobility:registry=https://npm.pkg.github.com`).
 - `dist/` is gitignored but a stale local copy may exist. Rebuild before linking into a sibling.
 
-## Known Issues (not fixed)
-
-- **Skewed photos are unmeasured.** `detectBoardRectangle` never warps perspective, and camera
-  captures are routed to this path exclusively by `sudojo_api`. See the plan's Task 5.
-- `src/algorithms/boardDetection.ts:362`: the doc says it can return `null`, but the dark-pixel
-  fallback always returns a rectangle, so the crop branch always runs.
-- `OCRProgress.status: 'error'` is never emitted. In pencilmark mode, progress stalls near 57%
-  until 95%.
-- `tests/*.ts` (`evaluate-truth.ts`, `validate-pencilmarks.ts`, `diagnose-cells.ts`) still call
-  `extractSudokuFromImage` with the old Tesseract argument and have not been updated.
-- `docs/OCR.md` describes the retired Tesseract pencilmark pipeline and its thresholds.
+Known issues (not fixed): skewed photos are unmeasured (see the Assets "Known gap" above);
+`boardDetection.ts` is documented as returning `null` but the dark-pixel fallback always returns a
+rectangle; `OCRProgress.status: 'error'` is never emitted and pencilmark progress stalls ~57%→95%;
+`tests/*.ts` and `docs/OCR.md` still describe the retired Tesseract pipeline (the `tests/*.ts`
+scripts pass a Tesseract arg to `extractSudokuFromImage`, whose signature is now
+`(adapter, source, paddle, config?)`).
 
 ## Cross-Repo Contracts
 
 | Repo | Relation |
 |---|---|
-| `sudojo_types` | **Peer dep** (`^1.2.67`). `OCRResult.board` is its `SolverBoard` |
+| `sudojo_types` | **Peer dep** (`^1.2.80`). `OCRResult.board` is its `SolverBoard` |
 | `sudojo_api` | **The only consumer.** `/node`. `src/services/ocr-paddle.ts` runs `{skipBoardDetection: false, recognizePencilmarks: true}` and supplies `PADDLE_OCR_URL` |
 | `paddle_ocr` | The recognition service this library POSTs to. Shared with `svgr_api` |
 | `sudojo_app`, `sudojo_app_rn`, `sudojo_extension`, `sudojo_bot` | no dependency; server-side OCR through sudojo_api |
@@ -216,7 +198,3 @@ plans/IMPROVEMENTS.md      improvement backlog
 Changing `OCRResult`, `OCRConfig` defaults, or subpath exports affects `sudojo_api`. The `./web`
 subpath export and the `tesseract.js` peer dependency were both removed — a consumer still importing
 either will break on upgrade.
-
-## Git Workflow
-
-- Do not use feature branches for code changes. Always stay on the current branch.

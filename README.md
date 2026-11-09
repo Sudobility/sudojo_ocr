@@ -41,8 +41,9 @@ console.log(result.digitCount);                // 40
 
 ### Accuracy
 
-Measured against the three committed fixtures and their ground truth, cropped then recognized:
-**243/243 cells correct**, 0.5-1.6s per board. The `recognizePencilmarks` flag only decides whether
+Measured against the three committed digit-board fixtures and their ground truth, cropped then
+recognized: **243/243 cells correct** (the live `src/test` suite asserts 81/81 on each),
+0.5-1.6s per board. The `recognizePencilmarks` flag only decides whether
 `autopencil` is set and the legal candidates are computed -- the marks themselves are derived from
 the givens by constraint propagation, never read off the image.
 
