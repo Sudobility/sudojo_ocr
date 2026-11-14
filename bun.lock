@@ -24,7 +24,7 @@
       },
       "peerDependencies": {
         "@napi-rs/canvas": "*",
-        "@sudobility/sudojo_types": "^1.2.82",
+        "@sudobility/sudojo_types": "^1.2.83",
       },
       "optionalPeers": [
         "@napi-rs/canvas",
