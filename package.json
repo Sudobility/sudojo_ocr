@@ -1,6 +1,6 @@
 {
   "name": "@sudobility/sudojo_ocr",
-  "version": "1.1.61",
+  "version": "1.1.62",
   "description": "OCR library for extracting Sudoku puzzles from images (Node.js; recognition via paddle_ocr)",
   "type": "module",
   "main": "./dist/index.js",

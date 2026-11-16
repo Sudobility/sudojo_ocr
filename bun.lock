@@ -169,7 +169,7 @@
 
     "@sudobility/sudojo_types": ["@sudobility/sudojo_types@1.2.79", "https://npm.pkg.github.com/download/@sudobility/sudojo_types/1.2.79/69c964c236525ab5d74a31f6aef5ff63037495a3", { "peerDependencies": { "@sudobility/types": "^1.9.76" } }, "sha512-k8x+kjxc0XHXpDxGhI3ab1g9YMTvL+SRlSEE2MbPehFzZnCzWW5bP8l6u8ys5V2HULzMq+IfzWQ4e0Rf9GoCGg=="],
 
-    "@sudobility/types": ["@sudobility/types@1.9.76", "https://npm.pkg.github.com/download/@sudobility/types/1.9.76/71635156f72fd9461107d5f147b3dc1c49f863d0", {}, "sha512-b7maZHR5wM84VlQ+l9R+2guzSOrExog6OUNy1oCe7h0abW13syycmnLQL0g+qql0aQ84qTB4A0mJelhY3Vef4Q=="],
+    "@sudobility/types": ["@sudobility/types@1.11.2", "https://npm.pkg.github.com/download/@sudobility/types/1.11.2/d6d0b1809eaca31ef737646032cc431111b58a49", {}, "sha512-gg+bPtcOGNETDt9oNdjcn7R22EfFWmRxMOhj0ADwulBJ9tJ4NaMaXkrTtkWF+figSDZqmD9a9kodgOHseq8gsQ=="],
 
     "@types/chai": ["@types/chai@5.2.3", "", { "dependencies": { "@types/deep-eql": "*", "assertion-error": "^2.0.1" } }, "sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA=="],
 
